@@ -3,7 +3,7 @@ require_once "Conn.php";
 
 $conn=Conn::getInstance();
 
-//echo var_dump($conn);
+/*echo var_dump($conn);*/
 
 try {
     array_map(function ($item) {

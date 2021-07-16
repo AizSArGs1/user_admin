@@ -24,7 +24,7 @@ class Conn
     protected function __construct() {
         try {
             // in real project i use .env for storing sensitive data
-            $this->pdo = new PDO("mysql:host=localhost;dbname=id17165085_userdb",  "id17165085_root", "id17165085_userdb");
+            $this->pdo = new PDO("localhost",  "root", "");
 
             // set the PDO error mode to exception
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
