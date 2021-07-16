@@ -1,0 +1,9 @@
+uploads/
+#ignore sub-folders' .git folders
+.git
+.idea
+
+/vendor/
+
+
+#ignore build/testing things
