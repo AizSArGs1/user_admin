@@ -13,12 +13,23 @@ try {
     $status = isset($_POST['status']) && !empty($_POST['status']) && $_POST['status'] === 'on' ? 1 : 0;
     // language=MySQL;
     $stmt = $conn->prepare("INSERT INTO `users`(`firstname`, `lastname`, `role`, `status`) VALUES (?, ?,'$role','$status')");
-    $stmt->execute([
+    $querySuccess = $stmt->execute([
         $firstname, $lastname
     ]);
-//    var_dump($stmt);
+    $newUser = [];
+    if ($querySuccess){
+        $userId = $conn->lastInsertId();
+        $getUser = $conn->prepare("SELECT * FROM users WHERE id=?");
+        $getUser->execute([
+            $userId
+        ]);
+        $newUser = $getUser->fetchAll(PDO::FETCH_OBJ);
+    }
+
     echo json_encode([
-        'success'=> (bool)$stmt
+        'success' => (bool)$stmt,
+        'newUser' => $newUser
+
     ]);
 } catch(PDOException $e) {
     echo json_encode([

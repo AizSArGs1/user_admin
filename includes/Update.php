@@ -17,13 +17,20 @@ try{
 //    $role = isset($_POST['role']) && !empty($_POST['role']) && $_POST['role'] === 'on' ? 1 : 0;
 //var_dump($role);
     $stmt = $conn->prepare("UPDATE users SET `firstname`=?, `lastname`=?, status=?, role=? WHERE id=?");
-    $stmt->execute([
+    $querySuccess = $stmt->execute([
          $firstname, $lastname, $status, $role, $id
     ]);
 
+    $updatedUser = [];
+    if ($querySuccess){
+        $getUser = $conn->prepare("SELECT * FROM users WHERE id=?");
+        $getUser->execute([$id]);
+        $updatedUser = $getUser->fetch(PDO::FETCH_OBJ);
+    }
     echo json_encode([
-        'success'=> true,
-        'msg'=> $stmt->rowCount() . " records UPDATED successfully"
+        'success' => true,
+        'msg' => $stmt->rowCount() . " records UPDATED successfully",
+        'updatedUser' => $updatedUser
     ]);
     die;
 }catch(PDOException $e) {

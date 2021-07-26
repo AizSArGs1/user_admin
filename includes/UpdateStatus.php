@@ -10,13 +10,21 @@ $status = $_POST['status'];
 try{
 
     $stmt = $conn->prepare("UPDATE users SET  status=? WHERE id in ($ids)");
-    $stmt->execute([
+    $querySuccess = $stmt->execute([
          $status
     ]);
 
+    $updatedStatus = [];
+    if ($querySuccess){
+        $getUser = $conn->prepare("SELECT * FROM users WHERE id in ($ids)");
+        $getUser->execute();
+        $updatedStatus = $getUser->fetchAll(PDO::FETCH_OBJ);
+    }
+
     echo json_encode([
-        'success'=> true,
-        'msg'=> $stmt->rowCount() . " records UPDATED successfully"
+        'success' => $querySuccess,
+        'updatedUsers' => $updatedStatus,
+        'msg' => $stmt->rowCount() . " records UPDATED successfully"
     ]);
     die;
 }catch(PDOException $e) {
