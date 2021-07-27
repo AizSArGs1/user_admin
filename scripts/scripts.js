@@ -98,11 +98,9 @@ $(document).ready(function() {
                     },
                 success: function(data) {
                     data = JSON.parse(data);
-                    console.log(data);
                     if(data['success']) {
                         const updatedUsers = data.updatedUsers;
                         updatedUsers.forEach(user => {
-                            console.log(user);
                             const activeColor = user.status === '1' ? 'green' : 'red';
                             const inactiveColor = user.status === '0' ? 'green' : 'red';
                             const userTr = $('#row-user-' + user.id);
@@ -134,8 +132,6 @@ $(document).ready(function() {
         }
 
         if (option == 2 || option2 == 2) {
-
-            console.log(selected_values);
             $.ajax({
                 method: "POST",
                 url: "includes/UpdateStatus.php",
@@ -149,7 +145,6 @@ $(document).ready(function() {
                     if(data['success']) {
                         const updatedUsers = data.updatedUsers;
                         updatedUsers.forEach(user => {
-                            console.log(user);
                             const activeColor = user.status === '1' ? 'green' : 'red';
                             const inactiveColor = user.status === '0' ? 'green' : 'red';
                             const userTr = $('#row-user-' + user.id);
@@ -263,18 +258,14 @@ $(document).ready(function() {
     $('#idForm').on('submit', function (e) {
         e.preventDefault();
         $("#idForm").attr("action", "includes/Create_user.php");
-        console.log("adding user")
         $.ajax({
             url: $("#idForm").attr("action"),
             method: "POST",
             data: $("#idForm").serialize(),
             success:function (data) {
-                console.log($("#idForm").serialize());
                 data = JSON.parse(data);
-                console.log(data);
                 if(data['success']){
                     data.newUser.forEach(element => {
-                        console.log(element);
                         var activecolor = element.status === '1' ? 'green' : 'red';
                         var tr = document.createElement("tr");
                         tr.setAttribute('id', 'row-user-' + element.id);
@@ -305,7 +296,6 @@ $(document).ready(function() {
         $('#idForm .firstName input[name="firstName"]').val($(this).closest('tr').find('#firstName').text());
         $('#idForm .lastName input[name="lastName"]').val($(this).closest('tr').find('#lastName').text());
         let checked = $(this).closest('tr').find('#status > div:first-child').attr('data-active');
-        console.log($('#idForm .custom-control-input'));
         $('#customSwitch').prop('checked', checked === '1' ? true : false);
         $('#idForm .custom-control-label').text(checked === '1' ? 'active' : 'inactive');
         let option = $(this).closest('tr').find('#role').text();
@@ -315,6 +305,7 @@ $(document).ready(function() {
         $('#update').show();
         $('#close-btn').on('click', function (e) {
             e.preventDefault();
+            restoreInput($('#idForm'))
             $('.form-row').hide();
             $('.swichControls').hide();
             $('#save').val("Add").hide();
@@ -342,6 +333,7 @@ $(document).ready(function() {
                         userTr.children('#status').children('div').attr('data-active', userData.status);
                         userTr.children('#status').children('div').removeClass(inactiveColor).addClass(activeColor);
                         $("#exampleModal").modal('hide');
+                        restoreInput($('#idForm'));
                     } else {
                         alert("Error...");
                     }
@@ -353,7 +345,6 @@ $(document).ready(function() {
 
     $(document).on('click', ".delete", function () {
         var userId = $(this).attr("data-id-user");
-        console.log(userId);
         $('#exampleModal').modal('show');
         $('.modal-title-one').show();
         $('.modal-title-one').text('Delete records');
@@ -378,7 +369,6 @@ $(document).ready(function() {
                 data: {id: userId},
                 success:function (data) {
                     data = JSON.parse(data);
-                    console.log(data);
                     if (data['success']) {
                         $('#row-user-' + userId).remove();
                         $("#exampleModal").modal('hide');
